@@ -4,6 +4,7 @@ import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
 import countiesData from "../data/uscounties.json";
+import { FaExclamationCircle } from 'react-icons/fa';
 
 // const render = (status: Status) => {
 //   if (status === Status.LOADING) return <h3>{status} ..</h3>;
@@ -11,9 +12,25 @@ import countiesData from "../data/uscounties.json";
 //   return null;
 // };
 
+interface ExclamationProps {
+  onClick: () => void;
+}
+
+function Exclamation({ onClick }: ExclamationProps) {
+  return (
+    <div onClick={onClick} style={{ cursor: 'pointer' }}>
+      <FaExclamationCircle size={24} color="red" />
+    </div>
+  );
+}
+
+
+
+
 function App() {
   const [array, setArray] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string>("");
+  const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
 
   const fetchAPI = async () => {
     try {
@@ -34,6 +51,11 @@ function App() {
     setSelectedOption(event.target.value);
   };
 
+  const toggleInfoBox = (): void => {
+    setIsInfoVisible(prev => !prev);
+  };
+
+
   //note render={render} was right after the api key below in case of any future errors letting u know
 
   return (
@@ -43,6 +65,14 @@ function App() {
           <h1>Header 1</h1>
         </div>
         <div className="header-2">
+        <div className="exclamation">
+          <Exclamation onClick={toggleInfoBox} />
+          {isInfoVisible && (
+            <div className="info-box">
+            <p>This is info box text.</p>
+          </div>
+        )}
+          </div>
           <div className="select-wrapper">
             <select
               name="counties"
