@@ -16,6 +16,14 @@ function App() {
   }, []);
 
   return (
+    <>
+      <select name="counties" id="counties">
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="mercedes">Mercedes</option>
+        <option value="audi">Audi</option>
+      </select>
+      
     <div className="app-container">
       <div className="header-1">
         <h1>Header 1</h1>
@@ -47,3 +55,4 @@ function App() {
 }
 
 export default App;
+
