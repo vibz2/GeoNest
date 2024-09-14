@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios'; // Import the axios library
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
+import Papa from 'papaparse';
 import './App.css';
 
 function App() {
@@ -55,4 +56,43 @@ function App() {
   );
 }
 
+function CountySelect() {
+  const [counties, setCounties] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Path to your CSV file
+    const csvFilePath = '/path/to/your/counties.csv';
+
+    // Fetch the CSV file and parse it
+    fetch(csvFilePath)
+      .then(response => response.text())
+      .then(data => {
+        Papa.parse(data, {
+          complete: (result) => {
+            // Store the parsed CSV data in state
+            const countyList = result.data.map((row: any) => row[0]); // Assuming each line has one county
+            setCounties(countyList);
+          },
+          error: (error) => {
+            console.error('Error parsing CSV:', error);
+          }
+        });
+      });
+  }, []);
+
+  return (
+    <div>
+      <label htmlFor="counties">Select a County:</label>
+      <select name="counties" id="counties">
+        {counties.map((county, index) => (
+          <option key={index} value={county}>
+            {county}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 export default App;
+
