@@ -82,58 +82,68 @@ function App() {
         <div className="header-2">
         <div className="select-wrapper">
           {/* State Dropdown */}
-          
-          <select
-            name="states"
-            id="states"
-            onChange={handleStateChange}
-            value={selectedState}
-          >
-            <option value="" disabled hidden>
-              Choose a state
-            </option>
-            {locationData.state.map((state, index) => (
-              <option key={index} value={state}>
-                {state}
+          <div className="select-container">
+            <label htmlFor="states">State:</label>
+            <select
+              name="states"
+              id="states"
+              onChange={handleStateChange}
+              value={selectedState}
+            >
+              <option value="" disabled hidden>
+                Choose a state
               </option>
-            ))}
-          </select>
-
-          {/* County Dropdown (Full List) */}
-          <select
-            name="counties"
-            id="counties"
-            onChange={handleCountyChange}
-            value={selectedCounty}
-          >
-            <option value="" disabled hidden>
-              Choose a county
-            </option>
-            {locationData.county.map((county, index) => (
-              <option key={index} value={county}>
-                {county}
-              </option>
-            ))}
-          </select>
-
-          {/* City Dropdown */}
-          <select
-            name="cities"
-            id="cities"
-            onChange={handleCityChange}
-            value={selectedCity}
-            disabled={!selectedCounty}
-          >
-            <option value="" disabled hidden>
-              Choose a city
-            </option>
-            {locationData.city
-              .map((city, index) => (
-                <option key={index} value={city}>
-                  {city}
+              {locationData.state.map((state, index) => (
+                <option key={index} value={state}>
+                  {state}
                 </option>
               ))}
-          </select>
+            </select>
+
+          </div>
+
+          {/* County Dropdown (Full List) */}
+          <div className="select-container">
+            <label htmlFor="counties">County:</label>
+            <select
+              name="counties"
+              id="counties"
+              onChange={handleCountyChange}
+              value={selectedCounty}
+            >
+              <option value="" disabled hidden>
+                Choose a county
+              </option>
+              {locationData.county.map((county, index) => (
+                <option key={index} value={county}>
+                  {county}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+          {/* City Dropdown */}
+          <div className="select-container">
+            <label htmlFor="cities">City:</label>
+            <select
+              name="cities"
+              id="cities"
+              onChange={handleCityChange}
+              value={selectedCity}
+              disabled={!selectedCounty}
+            >
+              <option value="" disabled hidden>
+                Choose a city
+              </option>
+              {locationData.city
+                .map((city, index) => (
+                  <option key={index} value={city}>
+                    {city}
+                  </option>
+                ))}
+            </select>
+          </div>
         </div>
       </div>
 
