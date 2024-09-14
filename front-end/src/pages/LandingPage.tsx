@@ -1,19 +1,15 @@
-
-import { useEffect, useState, ChangeEvent } from 'react';
-import axios from 'axios'; // Import the axios library
-import './App.css';
+import { useEffect, useState, ChangeEvent } from "react";
+import axios from "axios"; // Import the axios library
+import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
-import MapComponent from './MapsPage';
-import countiesData from "./uscounties.json"; // Import the JSON data
-
+import MapComponent from "../MapsPage";
+import countiesData from "../data/uscounties.json";
 
 // const render = (status: Status) => {
 //   if (status === Status.LOADING) return <h3>{status} ..</h3>;
 //   if (status === Status.FAILURE) return <h3>{status} ...</h3>;
 //   return null;
 // };
-
-
 
 function App() {
   const [array, setArray] = useState<string[]>([]);
@@ -31,14 +27,14 @@ function App() {
 
   useEffect(() => {
     fetchAPI();
-    }, []);
-    
-      // New function to handle select change
+  }, []);
+
+  // New function to handle select change
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
   };
-    
-//note render={render} was right after the api key below in case of any future errors letting u know
+
+  //note render={render} was right after the api key below in case of any future errors letting u know
 
   return (
     <>
@@ -48,13 +44,15 @@ function App() {
         </div>
         <div className="header-2">
           <div className="select-wrapper">
-            <select 
-              name="counties" 
-              id="counties" 
+            <select
+              name="counties"
+              id="counties"
               onChange={handleSelectChange}
               value={selectedOption}
             >
-              <option value="" disabled hidden>Choose an option: county, state</option>
+              <option value="" disabled hidden>
+                Choose an option: county, state
+              </option>
               {countiesData.location.map((location, index) => (
                 <option key={index} value={location}>
                   {location}
@@ -62,8 +60,6 @@ function App() {
               ))}
             </select>
           </div>
-
-
         </div>
         <div className="container-main">
           <div className="container-home">
@@ -80,10 +76,9 @@ function App() {
             <p className="read-the-docs">Hi hi hi</p>
           </div>
           <div className="container-map">
-
-              <div className="App">
-              <Wrapper apiKey={'AIzaSyBmhp7l4zjV_ILnIoZPEUcXFlGkBycSo2Y'}> 
-               <MapComponent />
+            <div className="App">
+              <Wrapper apiKey={"AIzaSyBmhp7l4zjV_ILnIoZPEUcXFlGkBycSo2Y"}>
+                <MapComponent />
               </Wrapper>
             </div>
             <h2>Map</h2>
