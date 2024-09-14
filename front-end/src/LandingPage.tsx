@@ -51,8 +51,7 @@ function App() {
         Hi hi hi
       </p>
     </div>
+    </>
   );
 }
-
 export default App;
-
