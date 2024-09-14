@@ -1,40 +1,54 @@
-import { useEffect, useState, ChangeEvent } from "react";
-import axios from "axios"; // Import the axios library
+import { useState, ChangeEvent } from "react";
+// import axios from "axios";
 import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
 import countiesData from "../data/uscounties.json";
+import tempHouses from "../data/tempHouses.json";
 
-// const render = (status: Status) => {
-//   if (status === Status.LOADING) return <h3>{status} ..</h3>;
-//   if (status === Status.FAILURE) return <h3>{status} ...</h3>;
-//   return null;
-// };
+// Define the type for house data
+interface House {
+  address: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  square_feet: number;
+}
+
+interface HousesData {
+  houses: House[];
+}
 
 function App() {
-  const [array, setArray] = useState<string[]>([]);
+  // const [array, setArray] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string>("");
 
-  const fetchAPI = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/");
-      setArray(response.data.users);
-      console.log(response.data.users);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  // const fetchAPI = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:8080/");
+  //     setArray(response.data.users);
+  //     console.log(response.data.users);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchAPI();
-  }, []);
+  // useEffect(() => {
+  //   fetchAPI();
+  // }, []);
 
-  // New function to handle select change
+  // New function to handle select change (user import)
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value);
   };
+  
+  // Function to handle house card click
+  const handleHouseClick = (house: House) => {
+    alert(`House clicked: ${house.address}`);
+  };
 
-  //note render={render} was right after the api key below in case of any future errors letting u know
+  // Cast tempHouses to HousesData type
+  const housesData: HousesData = tempHouses as HousesData;
 
   return (
     <>
@@ -65,7 +79,7 @@ function App() {
           <div className="container-home">
             <h2>Home</h2>
             <p>Home content goes here</p>
-            <div className="api-response">
+            {/* <div className="api-response">
               <h2>Flask API Response:</h2>
               <p>
                 {array.map((user, index) => (
@@ -73,7 +87,22 @@ function App() {
                 ))}
               </p>
             </div>
-            <p className="read-the-docs">Hi hi hi</p>
+            <p className="read-the-docs">Hi hi hi</p> */}
+            <div className="houses-list">
+              {housesData.houses.map((house, index) => (
+                <div
+                  key={index}
+                  className="house-card"
+                  onClick={() => handleHouseClick(house)}
+                >
+                  <p className="homeText"><strong>Address:</strong> {house.address}</p>
+                  <p className="homeText"><strong>Price:</strong> ${house.price.toLocaleString()}</p>
+                  <p className="homeText"><strong>Bedrooms:</strong> {house.bedrooms}</p>
+                  <p className="homeText"><strong>Bathrooms:</strong> {house.bathrooms}</p>
+                  <p className="homeText"><strong>Square Feet:</strong> {house.square_feet.toLocaleString()}</p>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="container-map">
             <div className="App">
