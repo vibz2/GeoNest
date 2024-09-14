@@ -10,7 +10,7 @@ const App = () => {
         <Route path="/" element = {<LandingPage />}>
           
         </Route>
-        {/* <Route path="/display/:pokemonName" element = {<MapsPage />}>
+        {/* <Route path="/MapsPage/:countyName" element = {<MapsPage />}>
           
         </Route> */}
       </Routes>
