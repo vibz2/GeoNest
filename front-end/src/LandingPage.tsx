@@ -1,27 +1,19 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios'; // Import the axios library
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+import axios from 'axios';
 import './App.css';
 
 function App() {
-  // State for the count button
-  const [count, setCount] = useState(0);
-  const [array , setArray] = useState([]);
-  
-  // State to store the message from the Flask API
-  // const [message, setMessage] = useState('');
+  const [array, setArray] = useState([]);
 
   const fetchAPI = async () => {
     const response = await axios.get('http://localhost:8080/');
     setArray(response.data.users);
     console.log(response.data.users);
-
   }
 
   useEffect(() => {
     fetchAPI();
-  } , []);
+  }, []);
 
   return (
     <>
@@ -32,26 +24,33 @@ function App() {
         <option value="audi">Audi</option>
       </select>
       
-      <h1>Vite + React + Flask</h1>
-      
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          Count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR.
-        </p>
+    <div className="app-container">
+      <div className="header-1">
+        <h1>Header 1</h1>
       </div>
-
-      <h2>Flask API Response:</h2>
-      <p>{array.map((user, index) => (
-        <span key={index}> {user} </span>
-      ))}</p>
-      
+      <div className="header-2">
+        <h1>Header 2</h1>
+      </div>
+      <div className="container-main">
+        <div className="container-home">
+          <h2>Home</h2>
+          <p>Home content goes here</p>
+        </div>
+        <div className="container-map">
+          <h2>Map</h2>
+          <p>Map content goes here</p>
+        </div>
+      </div>
+      <div className="api-response">
+        <h2>Flask API Response:</h2>
+        <p>{array.map((user, index) => (
+          <span key={index}> {user} </span>
+        ))}</p>
+      </div>
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more.
+        Hi hi hi
       </p>
-    </>
+    </div>
   );
 }
 
