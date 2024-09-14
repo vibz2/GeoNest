@@ -1,17 +1,51 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.read-the-docs {
-  color: #888;
+.header-1, .header-2 {
+  padding: 20px;
+  color: black;
+}
+
+.header-1 {
+  background-color: rgb(227, 227, 210);
+}
+
+.header-2 {
+  background-color: red;
+}
+
+.container-main {
+  display: flex;
+  flex: 1;
+}
+
+.container-home {
+  background-color: rgb(148, 184, 216);
+  width: 30%;
+  padding: 20px;
+}
+
+.container-map {
+  background-color: rgb(144, 166, 18);
+  width: 70%;
+  padding: 20px;
+}
+
+.api-response, .read-the-docs {
+  padding: 20px;
+  background-color: #9e1d1d;
+}
+
+h1, h2 {
+  margin-top: 0;
 }
