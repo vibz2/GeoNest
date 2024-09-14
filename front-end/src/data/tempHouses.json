@@ -1,0 +1,39 @@
+{
+  "houses": [
+    {
+      "address": "28 Allegheny Ave Unit 2507 Towson, MD 21204",
+      "price": 250000,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "square_feet": 1800
+    },
+    {
+      "address": "Towson, MD 21286, Towson Circle Neighborhood",
+      "price": 320000,
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "square_feet": 2200
+    },
+    {
+      "address": "205 E Joppa Rd Towson, MD 21286",
+      "price": 275000,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "square_feet": 1900
+    },
+    {
+      "address": "Lutherville Timonium, MD 21093 Falls Road Corridor Neighborhood",
+      "price": 290000,
+      "bedrooms": 3,
+      "bathrooms": 2,
+      "square_feet": 2000
+    },
+    {
+      "address": "Baltimore, MD 21212 Towson Circle Neighborhood",
+      "price": 310000,
+      "bedrooms": 4,
+      "bathrooms": 3,
+      "square_feet": 2100
+    }
+  ]
+}
