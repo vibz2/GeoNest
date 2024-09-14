@@ -5,6 +5,7 @@ import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
 import countiesData from "../data/uscounties.json";
 import tempHouses from "../data/tempHouses.json";
+import { useNavigate } from "react-router-dom";
 
 // Define the type for house data
 interface House {
@@ -22,6 +23,9 @@ interface HousesData {
 function App() {
   // const [array, setArray] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string>("");
+  const [county, setInputValue] = useState("");
+  const [city, setInputValue2] = useState("");
+  const [state, setInputValue3] = useState("");
 
   // const fetchAPI = async () => {
   //   try {
@@ -45,6 +49,10 @@ function App() {
   // Function to handle house card click
   const handleHouseClick = (house: House) => {
     alert(`House clicked: ${house.address}`);
+  };
+
+  const handleHouseClick = (house: House) => {
+    Navigation("/" + county + "/" + city + "/" + state);
   };
 
   // Cast tempHouses to HousesData type

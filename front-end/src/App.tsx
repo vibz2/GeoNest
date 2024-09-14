@@ -1,6 +1,6 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-// import MapsPage from "./MapsPage";
+import MapsPage from "./MapsPage";
 import LandingPage from "./pages/LandingPage";
 
 const App = () => {
@@ -9,9 +9,9 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />}></Route>
-          {/* <Route path="/display/:pokemonName" element = {<MapsPage />}>
-      
-    </Route> */}
+          <Route path="/:county/:city/:state" element = {<MapsPage />}>
+
+          </Route>
         </Routes>
       </Router>
     </>
