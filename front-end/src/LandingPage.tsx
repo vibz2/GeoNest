@@ -1,15 +1,20 @@
 import { useEffect, useState, ChangeEvent } from "react";
 import axios from "axios";
 import "./App.css";
+import countiesData from "./uscounties.json"; // Import the JSON data
 
 function App() {
-  const [array, setArray] = useState([]);
+  const [array, setArray] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string>("");
 
   const fetchAPI = async () => {
-    const response = await axios.get("http://localhost:8080/");
-    setArray(response.data.users);
-    console.log(response.data.users);
+    try {
+      const response = await axios.get("http://localhost:8080/");
+      setArray(response.data.users);
+      console.log(response.data.users);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   useEffect(() => {
@@ -36,15 +41,14 @@ function App() {
               value={selectedOption}
             >
               <option value="" disabled hidden>Choose an option: county, state</option>
-              <option value="volvo">Volvo</option>
-              <option value="saab">Saab</option>
-              <option value="mercedes">Mercedes</option>
-              <option value="audi">Audi</option>
+              {countiesData.location.map((location, index) => (
+                <option key={index} value={location}>
+                  {location}
+                </option>
+              ))}
             </select>
           </div>
 
-
-          {/* Display the selected option */}
         </div>
         <div className="container-main">
           <div className="container-home">
@@ -69,4 +73,5 @@ function App() {
     </>
   );
 }
+
 export default App;
