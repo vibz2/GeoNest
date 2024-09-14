@@ -3,6 +3,16 @@ import axios from 'axios'; // Import the axios library
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
+import { Status, Wrapper } from "@googlemaps/react-wrapper";
+import MapComponent from './MapsPage';
+
+
+const render = (status: Status) => {
+  if (status === Status.LOADING) return <h3>{status} ..</h3>;
+  if (status === Status.FAILURE) return <h3>{status} ...</h3>;
+  return null;
+};
+
 
 function App() {
   // State for the count button
@@ -22,9 +32,14 @@ function App() {
   useEffect(() => {
     fetchAPI();
   } , []);
-
+//note render={render} was right after the api key below in case of any future errors letting u know
   return (
     <>
+      <div className="App">
+        <Wrapper apiKey={'AIzaSyBmhp7l4zjV_ILnIoZPEUcXFlGkBycSo2Y'}> 
+          <MapComponent />
+        </Wrapper>
+      </div>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
