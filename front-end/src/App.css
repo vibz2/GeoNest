@@ -57,12 +57,14 @@ body, html {
   width: 500px;
   padding: 10px;
   position: relative;
-  
- 
   border-radius: 25px; /* Make the wrapper round */
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.select-container {
+  width: 4000px;
 }
 
 .select-wrapper select {
