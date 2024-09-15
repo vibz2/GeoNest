@@ -108,10 +108,15 @@ function App() {
     setIsInfoVisible(true);
   };
 
+  const handleSubmit = () => {
+    console.log(`State: ${selectedState}, County: ${selectedCounty}, City: ${selectedCity}`);
+  };
+
   const toggleInfoBox = (): void => {
     setIsInfoVisible(prev => !prev);
     // No need to toggle color here
   };
+  
 
   return (
     <>
@@ -186,6 +191,9 @@ function App() {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="search">
+            <button className="button" onClick={handleSubmit}>Search</button>
             </div>
           </div>
         </div>
