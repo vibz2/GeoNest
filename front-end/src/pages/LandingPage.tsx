@@ -116,7 +116,6 @@ function App() {
   return (
     <>    
       {/* Add your input elements and other components here */}
-      <button onClick={handleSubmit}>Search</button>
       <div className="app-container">
         <div className="header-1">
           <h1>GeoNest</h1>
@@ -190,6 +189,9 @@ function App() {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="search">
+            <button className="button" onClick={handleSubmit}>Search</button>
             </div>
           </div>
         </div>
