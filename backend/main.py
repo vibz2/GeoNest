@@ -10,7 +10,7 @@ CORS(app)  # This enables CORS for all routes
 
 conn = http.client.HTTPSConnection("zillow56.p.rapidapi.com")
 headers = {
-    'x-rapidapi-key': "64d06c0a70mshc1395b98bc739c1p1e5c27jsnc75a73d509d8",
+    'x-rapidapi-key': "e2168eb707msh4b307843c2da548p17279ejsn291624712ef8",
     'x-rapidapi-host': "zillow56.p.rapidapi.com"
 }
 
