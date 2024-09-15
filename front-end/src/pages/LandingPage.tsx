@@ -5,6 +5,7 @@ import MapComponent from "../MapsPage";
 import { FaExclamationCircle, FaTimes } from 'react-icons/fa'; // Import FaTimes for "X" icon
 import USLocations from "../data/USLocationsUser.json";
 import tempHouses from "../data/tempHouses.json";
+import naturalDisasters from "../data/natural_disasters.json";
 
 // Define the type for house data
 interface House {
@@ -24,6 +25,17 @@ interface LocationData {
   city: string[];
   state: string[];
   county: string[];
+}
+
+// Define the type for natural disasters data
+interface PreventiveMeasures {
+  id: number;
+  name: string;
+  preventive_measures: string[];
+}
+
+interface NaturalDisastersData {
+  disasters: PreventiveMeasures[];
 }
 
 interface ExclamationProps {
@@ -48,7 +60,11 @@ function Exclamation({ onClick, color, isInfoVisible }: ExclamationProps) {
 function App() {
   const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
   const [exclamationColor, setExclamationColor] = useState<string>("gray"); // Color state for exclamation point
+  const [popupContent, setPopupContent] = useState<string>("");
+
   const locationData: LocationData = USLocations as LocationData;
+  const housesData: HousesData = tempHouses as HousesData;
+  const disastersData: NaturalDisastersData = naturalDisasters as NaturalDisastersData;
 
   // State variables for selected options
   const [selectedState, setSelectedState] = useState<string>("");
@@ -70,19 +86,32 @@ function App() {
     setSelectedCity(event.target.value);
   };
 
+  // Randomize disasters and select a few
+  const getRandomDisasters = () => {
+    const numDisasters = Math.floor(Math.random() * 3) + 1; // Random number of disasters to show (1-3)
+    const shuffled = disastersData.disasters.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, numDisasters);
+  };
+
   const handleHouseClick = (house: House) => {
-    // alert(`House clicked: ${house.address}`);
     console.log(`House clicked: ${house.address}`);
     setExclamationColor(prevColor => (prevColor === "gray" ? "red" : "gray"));
+
+    // Generate random disasters and format the popup content
+    const selectedDisasters = getRandomDisasters();
+    const disasterInfo = selectedDisasters.map(disaster => `
+      <h3>${disaster.name}</h3>
+      <ul>${disaster.preventive_measures.map(measure => `<li>${measure}</li>`).join('')}</ul>
+    `).join('<hr/>');
+
+    setPopupContent(disasterInfo);
+    setIsInfoVisible(true);
   };
 
   const toggleInfoBox = (): void => {
     setIsInfoVisible(prev => !prev);
     // No need to toggle color here
   };
-
-  // Cast tempHouses to HousesData type
-  const housesData: HousesData = tempHouses as HousesData;
 
   return (
     <>
@@ -94,9 +123,7 @@ function App() {
           <div className="exclamation">
             <Exclamation onClick={toggleInfoBox} color={exclamationColor} isInfoVisible={isInfoVisible} />
             {isInfoVisible && (
-              <div className="info-box">
-                <p>This is info box text.</p>
-              </div>
+              <div className="info-box" dangerouslySetInnerHTML={{ __html: popupContent }} />
             )}
           </div>
           <div className="select-wrapper">
@@ -120,7 +147,7 @@ function App() {
               </select>
             </div>
 
-            {/* County Dropdown (Full List) */}
+            {/* County Dropdown */}
             <div className="select-container">
               <label htmlFor="counties">County:</label>
               <select
