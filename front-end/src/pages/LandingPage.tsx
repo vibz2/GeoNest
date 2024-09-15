@@ -3,9 +3,10 @@ import { useState, ChangeEvent } from "react";
 import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
-import countiesData from "../data/uscounties.json";
+import USLocations from "../data/USLocationsUser.json";
 import tempHouses from "../data/tempHouses.json";
 import { useNavigate } from "react-router-dom";
+
 
 // Define the type for house data
 interface House {
@@ -20,12 +21,20 @@ interface HousesData {
   houses: House[];
 }
 
+// Define the type for location data
+interface LocationData {
+  city: string[];
+  state: string[];
+  county: string[];
+}
+
 function App() {
-  // const [array, setArray] = useState<string[]>([]);
-  const [selectedOption, setSelectedOption] = useState<string>("");
-  const [county, setInputValue] = useState("");
-  const [city, setInputValue2] = useState("");
-  const [state, setInputValue3] = useState("");
+  const locationData: LocationData = USLocations as LocationData;
+
+  // State variables for selected options
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedCounty, setSelectedCounty] = useState<string>("");
+  const [selectedCity, setSelectedCity] = useState<string>("");
 
   // const fetchAPI = async () => {
   //   try {
@@ -41,17 +50,26 @@ function App() {
   //   fetchAPI();
   // }, []);
 
-  // New function to handle select change (user import)
-  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(event.target.value);
+  const handleStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedState(event.target.value);
+    setSelectedCounty("");
+    setSelectedCity("");
+  };
+
+  const handleCountyChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCounty(event.target.value);
+    setSelectedCity("");
   };
   
-  // Function to handle house card click
+  const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCity(event.target.value);
+  };
+
   const handleHouseClick = (house: House) => {
     alert(`House clicked: ${house.address}`);
   };
 
-  const handleHouseClick = (house: House) => {
+  const testing = (house: House) => {
     Navigation("/" + county + "/" + city + "/" + state);
   };
 
@@ -65,24 +83,73 @@ function App() {
           <h1>Header 1</h1>
         </div>
         <div className="header-2">
-          <div className="select-wrapper">
+        <div className="select-wrapper">
+          {/* State Dropdown */}
+          <div className="select-container">
+            <label htmlFor="states">State:</label>
             <select
-              name="counties"
-              id="counties"
-              onChange={handleSelectChange}
-              value={selectedOption}
+              name="states"
+              id="states"
+              onChange={handleStateChange}
+              value={selectedState}
             >
               <option value="" disabled hidden>
-                Choose an option: county, state
+                Choose a state
               </option>
-              {countiesData.location.map((location, index) => (
-                <option key={index} value={location}>
-                  {location}
+              {locationData.state.map((state, index) => (
+                <option key={index} value={state}>
+                  {state}
                 </option>
               ))}
             </select>
+
+          </div>
+
+          {/* County Dropdown (Full List) */}
+          <div className="select-container">
+            <label htmlFor="counties">County:</label>
+            <select
+              name="counties"
+              id="counties"
+              onChange={handleCountyChange}
+              value={selectedCounty}
+            >
+              <option value="" disabled hidden>
+                Choose a county
+              </option>
+              {locationData.county.map((county, index) => (
+                <option key={index} value={county}>
+                  {county}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+          {/* City Dropdown */}
+          <div className="select-container">
+            <label htmlFor="cities">City:</label>
+            <select
+              name="cities"
+              id="cities"
+              onChange={handleCityChange}
+              value={selectedCity}
+              disabled={!selectedCounty}
+            >
+              <option value="" disabled hidden>
+                Choose a city
+              </option>
+              {locationData.city
+                .map((city, index) => (
+                  <option key={index} value={city}>
+                    {city}
+                  </option>
+                ))}
+            </select>
           </div>
         </div>
+      </div>
+
         <div className="container-main">
           <div className="container-home">
             <h2>Home</h2>
