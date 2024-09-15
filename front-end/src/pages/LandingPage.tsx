@@ -72,58 +72,92 @@ function App() {
 
   const handleSubmit = async () => {
     if (selectedState && selectedCounty && selectedCity) {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.post(
-          `http://localhost:8080/api/data`,
-          null,
-          {
-            params: {
-              state: selectedState,
-              county: selectedCounty,
-              city: selectedCity,
-            },
-          }
-        );
-        const tempHouses: House[] = [];
-        for (let i = 0; i < response.data.results.length; i++) {
-          const cHouse: House = {
-            streetAddress: response.data.results[i].streetAddress,
-            price: response.data.results[i].price,
-            bedrooms: response.data.results[i].bedrooms,
-            bathrooms: response.data.results[i].bathrooms,
-            lotAreaValue: response.data.results[i].lotAreaValue,
-            longitude: response.data.results[i].longitude,
-            latitude: response.data.results[i].latitude,
-            imgSrc: response.data.results[i].imgSrc,
-          };
-          tempHouses.push(cHouse);
+      // Make an API call to Flask with state, county, city
+      axios.post(`http://localhost:8080/api/data`, null, {
+        params: {
+          state: selectedState,
+          county: selectedCounty,
+          city: selectedCity,
         }
-        setHouses(tempHouses);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to fetch houses. Please try again.");
-      }
-
-      try {
-        const result = await axios.post(`http://localhost:8080/api/get_disaster_data`, null, {
+      })
+        .then((response) => {
+          console.log("Response data:", response.data);
+          console.log("Response data:", response.data[0]);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+        axios.post(`http://localhost:8080/api/get_disaster_data`, null, {
           params: {
             state: selectedState,
             county: selectedCounty,
-          },
+          }
+        })
+        .then((result) => {
+          console.log(result)
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
         });
-        console.log(result);
-        setResult(result.data); // Storing disaster data
-      } catch (error) {
-        console.error("Error fetching disaster data:", error);
-      } finally {
-        setLoading(false);
-      }
     } else {
       alert("Please select state, county, and city.");
     }
   };
+          
+  // const handleSubmit = async () => {
+  //   if (selectedState && selectedCounty && selectedCity) {
+  //     setLoading(true);
+  //     setError(null);
+  //     try {
+  //         const response = await axios.post(
+  //         `http://localhost:8080/api/data`,
+  //         null,
+  //         {
+  //           params: {
+  //             state: selectedState,
+  //             county: selectedCounty,
+  //             city: selectedCity,
+  //           },
+  //         }
+  //       );
+  //       const tempHouses: House[] = [];
+  //       for (let i = 0; i < response.data.results.length; i++) {
+  //         const cHouse: House = {
+  //           streetAddress: response.data.results[i].streetAddress,
+  //           price: response.data.results[i].price,
+  //           bedrooms: response.data.results[i].bedrooms,
+  //           bathrooms: response.data.results[i].bathrooms,
+  //           lotAreaValue: response.data.results[i].lotAreaValue,
+  //           longitude: response.data.results[i].longitude,
+  //           latitude: response.data.results[i].latitude,
+  //           imgSrc: response.data.results[i].imgSrc,
+  //         };
+  //         tempHouses.push(cHouse);
+  //       }
+  //       setHouses(tempHouses);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //       setError("Failed to fetch houses. Please try again.");
+  //     }
+
+  //     try {
+  //       const result = await axios.post(`http://localhost:8080/api/get_disaster_data`, null, {
+  //         params: {
+  //           state: selectedState,
+  //           county: selectedCounty,
+  //         },
+  //       });
+  //       console.log(result);
+  //       setResult(result.data); // Storing disaster data
+  //     } catch (error) {
+  //       console.error("Error fetching disaster data:", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   } else {
+  //     alert("Please select state, county, and city.");
+  //   }
+  // };
 
   const toggleInfoBox = (): void => {
     setIsInfoVisible((prev) => !prev);
