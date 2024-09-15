@@ -24,6 +24,7 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
+  overflow: hidden;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
@@ -57,7 +58,9 @@ body, html {
 
 /* Add styles for the select-wrapper and select element */
 .select-wrapper {
-  right: 74vh;
+  display: flex;
+  justify-content: flex-end;
+  right: 58vh;
   width: 80%; /* Changed from 500px to 80% for responsiveness */
   max-width: 500px; /* Optionally set a max-width */
   padding: 10px;

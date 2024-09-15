@@ -1,23 +1,22 @@
-import { useState, ChangeEvent } from "react"; //UseEffect
+import { useState, ChangeEvent } from "react";
 import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
-import { FaExclamationCircle } from "react-icons/fa";
+import { FaExclamationCircle } from 'react-icons/fa';
 import USLocations from "../data/USLocationsUser.json";
-
-
-import axios from "axios";
+import tempHouses from "../data/tempHouses.json";
 
 // Define the type for house data
 interface House {
-  streetAddress: string;
+  address: string;
   price: number;
   bedrooms: number;
   bathrooms: number;
-  lotAreaValue: number;
-  longitude: number;
-  latitude: number;
-  imgSrc: string; // Assuming imgSrc comes from the API
+  square_feet: number;
+}
+
+interface HousesData {
+  houses: House[];
 }
 
 // Define the type for location data
@@ -29,27 +28,26 @@ interface LocationData {
 
 interface ExclamationProps {
   onClick: () => void;
+  color: string;
 }
 
-function Exclamation({ onClick }: ExclamationProps) {
+function Exclamation({ onClick, color }: ExclamationProps) {
   return (
-    <div onClick={onClick} style={{ cursor: "pointer" }}>
-      <FaExclamationCircle size={24} color="red" />
+    <div onClick={onClick} style={{ cursor: 'pointer' }}>
+      <FaExclamationCircle size={24} color={color} />
     </div>
   );
 }
 
 function App() {
   const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
+  const [exclamationColor, setExclamationColor] = useState<string>("gray"); // Color state for exclamation point
+  const locationData: LocationData = USLocations as LocationData;
+
+  // State variables for selected options
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedCounty, setSelectedCounty] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [houses, setHouses] = useState<House[]>([]);
-  const [error, setError] = useState<string | null>(null); // Error state
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
-
-  const locationData: LocationData = USLocations as LocationData;
-  const [result, setResult] = useState('');
 
   const handleStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedState(event.target.value);
@@ -67,82 +65,32 @@ function App() {
   };
 
   const handleHouseClick = (house: House) => {
-    alert(`House clicked: ${house.streetAddress}`);
-  };
-
-  const handleSubmit = async () => {
-    if (selectedState && selectedCounty && selectedCity) {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.post(
-          `http://localhost:8080/api/data`,
-          null,
-          {
-            params: {
-              state: selectedState,
-              county: selectedCounty,
-              city: selectedCity,
-            },
-          }
-        );
-        const tempHouses: House[] = [];
-        for (let i = 0; i < response.data.results.length; i++) {
-          const cHouse: House = {
-            streetAddress: response.data.results[i].streetAddress,
-            price: response.data.results[i].price,
-            bedrooms: response.data.results[i].bedrooms,
-            bathrooms: response.data.results[i].bathrooms,
-            lotAreaValue: response.data.results[i].lotAreaValue,
-            longitude: response.data.results[i].longitude,
-            latitude: response.data.results[i].latitude,
-            imgSrc: response.data.results[i].imgSrc,
-          };
-          tempHouses.push(cHouse);
-        }
-        setHouses(tempHouses);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to fetch houses. Please try again.");
-      }
-
-      try {
-        const result = await axios.post(`http://localhost:8080/api/get_disaster_data`, null, {
-          params: {
-            state: selectedState,
-            county: selectedCounty,
-          },
-        });
-        console.log(result);
-        setResult(result.data); // Storing disaster data
-      } catch (error) {
-        console.error("Error fetching disaster data:", error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      alert("Please select state, county, and city.");
-    }
+    // alert(`House clicked: ${house.address}`);
+    console.log(`House clicked: ${house.address}`);
+    setExclamationColor(prevColor => (prevColor === "gray" ? "red" : "gray"));
   };
 
   const toggleInfoBox = (): void => {
-    setIsInfoVisible((prev) => !prev);
+    setIsInfoVisible(prev => !prev);
+    // Toggle color between gray and red
+
   };
+
+  // Cast tempHouses to HousesData type
+  const housesData: HousesData = tempHouses as HousesData;
 
   return (
     <>
-      <button onClick={handleSubmit}>Search</button>
       <div className="app-container">
         <div className="header-1">
           <h1>GeoNest</h1>
         </div>
         <div className="header-2">
           <div className="exclamation">
-            <Exclamation onClick={toggleInfoBox} />
+            <Exclamation onClick={toggleInfoBox} color={exclamationColor} />
             {isInfoVisible && (
               <div className="info-box">
                 <p>This is info box text.</p>
-                <p>Result: {result}</p>
               </div>
             )}
           </div>
@@ -167,7 +115,7 @@ function App() {
               </select>
             </div>
 
-            {/* County Dropdown */}
+            {/* County Dropdown (Full List) */}
             <div className="select-container">
               <label htmlFor="counties">County:</label>
               <select
@@ -207,42 +155,23 @@ function App() {
                 ))}
               </select>
             </div>
-            <div className="search">
-            <button className="button" onClick={handleSubmit}>Search</button>
-            </div>
           </div>
         </div>
 
         <div className="container-main">
           <div className="container-home">
             <div className="houses-list">
-              {loading && <p>Loading...</p>}
-              {error && <p className="error-message">{error}</p>}
-              {houses.length === 0 && !loading && !error && (
-                <p>No houses available for the selected criteria.</p>
-              )}
-              {houses.map((house, index) => (
+              {housesData.houses.map((house, index) => (
                 <div
                   key={index}
                   className="house-card"
                   onClick={() => handleHouseClick(house)}
                 >
-                  <p className="homeText">
-                    <strong>Address:</strong> {house.streetAddress || "N/A"}
-                  </p>
-                  <p className="homeText">
-                    <strong>Price:</strong> ${house.price.toLocaleString() || "N/A"}
-                  </p>
-                  <p className="homeText">
-                    <strong>Bedrooms:</strong> {house.bedrooms || "N/A"}
-                  </p>
-                  <p className="homeText">
-                    <strong>Bathrooms:</strong> {house.bathrooms || "N/A"}
-                  </p>
-                  <p className="homeText">
-                    <strong>Lot Area:</strong>
-                    {house.lotAreaValue.toLocaleString() || "N/A"}
-                  </p>
+                  <p className="homeText"><strong>Address:</strong> {house.address}</p>
+                  <p className="homeText"><strong>Price:</strong> ${house.price.toLocaleString()}</p>
+                  <p className="homeText"><strong>Bedrooms:</strong> {house.bedrooms}</p>
+                  <p className="homeText"><strong>Bathrooms:</strong> {house.bathrooms}</p>
+                  <p className="homeText"><strong>Square Feet:</strong> {house.square_feet.toLocaleString()}</p>
                 </div>
               ))}
             </div>
@@ -253,6 +182,8 @@ function App() {
                 <MapComponent />
               </Wrapper>
             </div>
+            <h2>Map</h2>
+            <p>Map content goes here</p>
           </div>
         </div>
       </div>
