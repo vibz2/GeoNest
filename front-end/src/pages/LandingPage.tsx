@@ -5,6 +5,8 @@ import MapComponent from "../MapsPage";
 import { FaExclamationCircle } from 'react-icons/fa';
 import USLocations from "../data/USLocationsUser.json";
 import tempHouses from "../data/tempHouses.json";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Define the type for house data
 interface House {
@@ -66,6 +68,44 @@ function App() {
     alert(`House clicked: ${house.address}`);
   };
 
+  const navigation = async () => {
+    const url = `/api/data/?county=${selectedCounty}&city=${selectedCity}&state=${selectedState}`;
+    fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('An error occurred while fetching the data.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Data received from backend:', data);
+      // Handle the data received from the backend
+    })
+    .catch(error => console.error('Error fetching data:', error));
+  };
+
+  const handleSubmit = () => {
+    if (selectedState && selectedCounty && selectedCity) {
+      // Make an API call to Flask with state, county, city
+      axios.post(`http://localhost:8080/api/data`, null, {
+        params: {
+          state: selectedState,
+          county: selectedCounty,
+          city: selectedCity,
+        }
+      })
+        .then((response) => {
+          console.log("Response data:", response.data);
+          console.log("Response data:", response.data[0]);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    } else {
+      alert("Please select state, county, and city.");
+    }
+  };
+
   const toggleInfoBox = (): void => {
     setIsInfoVisible(prev => !prev);
   };
@@ -74,7 +114,9 @@ function App() {
   const housesData: HousesData = tempHouses as HousesData;
 
   return (
-    <>
+    <>    
+      {/* Add your input elements and other components here */}
+      <button onClick={handleSubmit}>Search</button>
       <div className="app-container">
         <div className="header-1">
           <h1>GeoNest</h1>
