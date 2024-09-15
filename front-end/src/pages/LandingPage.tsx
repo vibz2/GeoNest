@@ -4,7 +4,7 @@ import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
 import { FaExclamationCircle } from "react-icons/fa";
 import USLocations from "../data/USLocationsUser.json";
-import tempHouses from "../data/tempHouses.json";
+
 
 import axios from "axios";
 
@@ -51,7 +51,6 @@ function App() {
   const locationData: LocationData = USLocations as LocationData;
   const [result, setResult] = useState('');
 
-
   const handleStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedState(event.target.value);
     setSelectedCounty("");
@@ -70,23 +69,6 @@ function App() {
   const handleHouseClick = (house: House) => {
     alert(`House clicked: ${house.streetAddress}`);
   };
-
-
-  // const navigation = async () => {
-  //   const url = `/api/data/?county=${selectedCounty}&city=${selectedCity}&state=${selectedState}`;
-  //   fetch(url)
-  //   .then(response => {
-  //     if (!response.ok) {
-  //       throw new Error('An error occurred while fetching the data.');
-  //     }
-  //     return response.json();
-  //   })
-  //   .then(data => {
-  //     console.log('Data received from backend:', data);
-  //     // Handle the data received from the backend
-  //   })
-  //   .catch(error => console.error('Error fetching data:', error));
-  // };
 
   const handleSubmit = async () => {
     if (selectedState && selectedCounty && selectedCity) {
@@ -116,36 +98,28 @@ function App() {
             latitude: response.data.results[i].latitude,
             imgSrc: response.data.results[i].imgSrc,
           };
-          // console.log("House:", cHouse);
           tempHouses.push(cHouse);
         }
-        // console.log("Temp Houses:", tempHouses);
         setHouses(tempHouses);
- 
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch houses. Please try again.");
+      }
 
-      })
-        .then((response) => {
-          console.log("Response data:", response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-          setError("Failed to fetch houses. Please try again.");
-        });
-        axios.post(`http://localhost:8080/api/get_disaster_data`, null, {
+      try {
+        const result = await axios.post(`http://localhost:8080/api/get_disaster_data`, null, {
           params: {
             state: selectedState,
             county: selectedCounty,
-          }
-        })
-        .then((result) => {
-          console.log(result)
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        }finally {
+          },
+        });
+        console.log(result);
+        setResult(result.data); // Storing disaster data
+      } catch (error) {
+        console.error("Error fetching disaster data:", error);
+      } finally {
         setLoading(false);
-      });
-
+      }
     } else {
       alert("Please select state, county, and city.");
     }
@@ -154,10 +128,6 @@ function App() {
   const toggleInfoBox = (): void => {
     setIsInfoVisible((prev) => !prev);
   };
-
-  // useEffect(() => {
-  //   console.log("Houses state:", houses);
-  // }, [houses]);
 
   return (
     <>
