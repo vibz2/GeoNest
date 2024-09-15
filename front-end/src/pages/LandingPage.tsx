@@ -5,7 +5,6 @@ import MapComponent from "../MapsPage";
 import { FaExclamationCircle } from 'react-icons/fa';
 import USLocations from "../data/USLocationsUser.json";
 import tempHouses from "../data/tempHouses.json";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // Define the type for house data
@@ -48,6 +47,7 @@ function App() {
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedCounty, setSelectedCounty] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
+  const [result, setResult] = useState('');
 
   const handleStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedState(event.target.value);
@@ -68,23 +68,23 @@ function App() {
     alert(`House clicked: ${house.address}`);
   };
 
-  const navigation = async () => {
-    const url = `/api/data/?county=${selectedCounty}&city=${selectedCity}&state=${selectedState}`;
-    fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('An error occurred while fetching the data.');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Data received from backend:', data);
-      // Handle the data received from the backend
-    })
-    .catch(error => console.error('Error fetching data:', error));
-  };
+  // const navigation = async () => {
+  //   const url = `/api/data/?county=${selectedCounty}&city=${selectedCity}&state=${selectedState}`;
+  //   fetch(url)
+  //   .then(response => {
+  //     if (!response.ok) {
+  //       throw new Error('An error occurred while fetching the data.');
+  //     }
+  //     return response.json();
+  //   })
+  //   .then(data => {
+  //     console.log('Data received from backend:', data);
+  //     // Handle the data received from the backend
+  //   })
+  //   .catch(error => console.error('Error fetching data:', error));
+  // };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedState && selectedCounty && selectedCity) {
       // Make an API call to Flask with state, county, city
       axios.post(`http://localhost:8080/api/data`, null, {
@@ -96,7 +96,18 @@ function App() {
       })
         .then((response) => {
           console.log("Response data:", response.data);
-          console.log("Response data:", response.data[0]);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+        axios.post(`http://localhost:8080/api/get_disaster_data`, null, {
+          params: {
+            state: selectedState,
+            county: selectedCounty,
+          }
+        })
+        .then((result) => {
+          console.log(result)
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -127,6 +138,7 @@ function App() {
             {isInfoVisible && (
               <div className="info-box">
                 <p>This is info box text.</p>
+                <p>Result: {result}</p>
               </div>
             )}
           </div>
