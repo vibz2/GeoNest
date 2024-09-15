@@ -2,10 +2,9 @@ import { useState, ChangeEvent } from "react";
 import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
-import { FaExclamationCircle } from 'react-icons/fa';
+import { FaExclamationCircle } from "react-icons/fa";
 import USLocations from "../data/USLocationsUser.json";
 import tempHouses from "../data/tempHouses.json";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // Define the type for house data
@@ -34,14 +33,14 @@ interface ExclamationProps {
 
 function Exclamation({ onClick }: ExclamationProps) {
   return (
-    <div onClick={onClick} style={{ cursor: 'pointer' }}>
+    <div onClick={onClick} style={{ cursor: "pointer" }}>
       <FaExclamationCircle size={24} color="red" />
     </div>
   );
 }
 
 function App() {
-  const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);      
+  const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
   const locationData: LocationData = USLocations as LocationData;
 
   // State variables for selected options
@@ -59,7 +58,7 @@ function App() {
     setSelectedCounty(event.target.value);
     setSelectedCity("");
   };
-  
+
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value);
   };
@@ -68,35 +67,29 @@ function App() {
     alert(`House clicked: ${house.address}`);
   };
 
-  const navigation = async () => {
-    const url = `/api/data/?county=${selectedCounty}&city=${selectedCity}&state=${selectedState}`;
-    fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('An error occurred while fetching the data.');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Data received from backend:', data);
-      // Handle the data received from the backend
-    })
-    .catch(error => console.error('Error fetching data:', error));
-  };
-
   const handleSubmit = () => {
     if (selectedState && selectedCounty && selectedCity) {
       // Make an API call to Flask with state, county, city
-      axios.post(`http://localhost:8080/api/data`, null, {
-        params: {
-          state: selectedState,
-          county: selectedCounty,
-          city: selectedCity,
-        }
-      })
+      axios
+        .post(`http://localhost:8080/api/data`, null, {
+          params: {
+            state: selectedState,
+            county: selectedCounty,
+            city: selectedCity,
+          },
+        })
         .then((response) => {
-          console.log("Response data:", response.data);
-          console.log("Response data:", response.data[0]);
+          console.log("Response data:", response.data);//gets the information for the API Call
+          console.log("Response data:", response.data.results[0]);//gets the information for the first house
+          console.log("Response data:", response.data.results[0].price);//gets the information for the first house's price
+          console.log("Response data:", response.data.results[0].latitude);//gets the information for the first house's latitude
+          console.log("Response data:", response.data.results[0].longitude);
+          console.log("Response data:", response.data.results[0].imgSrc);
+          console.log("Response data:", response.data.results[0].address);
+          console.log("Response data:", response.data.results[0].state);
+          console.log("Response data:", response.data.results[0].zip);
+          
+          
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -107,14 +100,14 @@ function App() {
   };
 
   const toggleInfoBox = (): void => {
-    setIsInfoVisible(prev => !prev);
+    setIsInfoVisible((prev) => !prev);
   };
-          
+
   // Cast tempHouses to HousesData type
   const housesData: HousesData = tempHouses as HousesData;
 
   return (
-    <>    
+    <>
       {/* Add your input elements and other components here */}
       <button onClick={handleSubmit}>Search</button>
       <div className="app-container">
@@ -203,11 +196,22 @@ function App() {
                   className="house-card"
                   onClick={() => handleHouseClick(house)}
                 >
-                  <p className="homeText"><strong>Address:</strong> {house.address}</p>
-                  <p className="homeText"><strong>Price:</strong> ${house.price.toLocaleString()}</p>
-                  <p className="homeText"><strong>Bedrooms:</strong> {house.bedrooms}</p>
-                  <p className="homeText"><strong>Bathrooms:</strong> {house.bathrooms}</p>
-                  <p className="homeText"><strong>Square Feet:</strong> {house.square_feet.toLocaleString()}</p>
+                  <p className="homeText">
+                    <strong>Address:</strong> {house.address}
+                  </p>
+                  <p className="homeText">
+                    <strong>Price:</strong> ${house.price.toLocaleString()}
+                  </p>
+                  <p className="homeText">
+                    <strong>Bedrooms:</strong> {house.bedrooms}
+                  </p>
+                  <p className="homeText">
+                    <strong>Bathrooms:</strong> {house.bathrooms}
+                  </p>
+                  <p className="homeText">
+                    <strong>Square Feet:</strong>{" "}
+                    {house.square_feet.toLocaleString()}
+                  </p>
                 </div>
               ))}
             </div>
