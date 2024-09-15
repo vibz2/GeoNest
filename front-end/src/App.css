@@ -35,14 +35,13 @@ body, html {
   
 }
 
-.header-1, .header-2 {
-  padding: 10px;
-  color: var(--header-border);
-}
-
 .header-1 {
+  display: flex;
+  justify-content: center;
   background-color: var(--header-bg);
   border-bottom: 2px solid var(--header-border);
+  padding: 10px;
+  color: var(--header-border);
 }
 
 .header-2 {
@@ -50,6 +49,12 @@ body, html {
   display: flex;
   flex: 0;
   align-content: center;
+  padding: 10px;
+  color: var(--header-border);
+}
+
+.select-container {
+  width: 4000px;
 }
 
 /* Add styles for the select-wrapper and select element */
