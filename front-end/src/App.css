@@ -31,7 +31,6 @@ body, html {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  
 }
 
 .header-1 {
@@ -204,4 +203,23 @@ h1, h2 {
     color: red;
   }
 }
+
+.search {
+  padding-top: 19px;
+  margin-left: 10px;
+}
+
+.button {
+  border-radius: 30%;
+  padding: 5px;
+  cursor: pointer;
+  background-color: var(--orange-highlight);
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #d95404; /* Darken the background color on hover */
+}
+
 

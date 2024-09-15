@@ -197,6 +197,9 @@ function App() {
                 ))}
               </select>
             </div>
+            <div className="search">
+            <button className="button" onClick={handleSubmit}>Search</button>
+            </div>
           </div>
         </div>
 
