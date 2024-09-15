@@ -52,7 +52,7 @@ function Exclamation({ onClick, color, isInfoVisible }: ExclamationProps) {
       onClick={color !== "gray" ? onClick : undefined} // Disable onClick if color is gray
       style={{ cursor: color !== "gray" ? 'pointer' : 'default' }}
     >
-      <Icon size={24} color={color} />
+      <Icon size={24} color={isInfoVisible ? "red" : color} /> {/* Always red if info is visible */}
     </div>
   );
 }
