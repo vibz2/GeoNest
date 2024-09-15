@@ -3,8 +3,11 @@ import { useState, ChangeEvent } from "react";
 import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
+
+import { FaExclamationCircle } from 'react-icons/fa';
 import USLocations from "../data/USLocationsUser.json";
 import tempHouses from "../data/tempHouses.json";
+
 
 
 // Define the type for house data
@@ -27,7 +30,23 @@ interface LocationData {
   county: string[];
 }
 
+interface ExclamationProps {
+  onClick: () => void;
+}
+
+function Exclamation({ onClick }: ExclamationProps) {
+  return (
+    <div onClick={onClick} style={{ cursor: 'pointer' }}>
+      <FaExclamationCircle size={24} color="red" />
+    </div>
+  );
+}
+
+
+
+
 function App() {
+  const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);      
   const locationData: LocationData = USLocations as LocationData;
 
   // State variables for selected options
@@ -68,8 +87,12 @@ function App() {
     alert(`House clicked: ${house.address}`);
   };
 
-
-
+  const toggleInfoBox = (): void => {
+    setIsInfoVisible(prev => !prev);
+  };
+  //note render={render} was right after the api key below in case of any future errors letting u know
+          
+ 
   // Cast tempHouses to HousesData type
   const housesData: HousesData = tempHouses as HousesData;
 
@@ -80,6 +103,13 @@ function App() {
           <h1>Header 1</h1>
         </div>
         <div className="header-2">
+
+          <div className="exclamation">
+          <Exclamation onClick={toggleInfoBox} />
+          {isInfoVisible && (
+            <div className="info-box">
+            <p>This is info box text.</p>
+          </div>
         <div className="select-wrapper">
           {/* State Dropdown */}
           <div className="select-container">
