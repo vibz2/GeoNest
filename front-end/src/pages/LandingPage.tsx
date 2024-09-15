@@ -77,7 +77,7 @@ function App() {
     <>
       <div className="app-container">
         <div className="header-1">
-          <h1>Header 1</h1>
+          <h1>GeoNest</h1>
         </div>
         <div className="header-2">
           <div className="exclamation">
@@ -154,8 +154,6 @@ function App() {
 
         <div className="container-main">
           <div className="container-home">
-            <h2>Home</h2>
-            <p>Home content goes here</p>
             <div className="houses-list">
               {housesData.houses.map((house, index) => (
                 <div
@@ -178,8 +176,6 @@ function App() {
                 <MapComponent />
               </Wrapper>
             </div>
-            <h2>Map</h2>
-            <p>Map content goes here</p>
           </div>
         </div>
       </div>
