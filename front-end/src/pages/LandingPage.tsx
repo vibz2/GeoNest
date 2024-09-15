@@ -1,23 +1,21 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react"; //UseEffect
 import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
 import { FaExclamationCircle } from "react-icons/fa";
 import USLocations from "../data/USLocationsUser.json";
-import tempHouses from "../data/tempHouses.json";
 import axios from "axios";
 
 // Define the type for house data
 interface House {
-  address: string;
+  streetAddress: string;
   price: number;
   bedrooms: number;
   bathrooms: number;
-  square_feet: number;
-}
-
-interface HousesData {
-  houses: House[];
+  lotAreaValue: number;
+  longitude: number;
+  latitude: number;
+  imgSrc: string; // Assuming imgSrc comes from the API
 }
 
 // Define the type for location data
@@ -41,12 +39,14 @@ function Exclamation({ onClick }: ExclamationProps) {
 
 function App() {
   const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
-  const locationData: LocationData = USLocations as LocationData;
-
-  // State variables for selected options
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedCounty, setSelectedCounty] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
+  const [houses, setHouses] = useState<House[]>([]);
+  const [error, setError] = useState<string | null>(null); // Error state
+  const [loading, setLoading] = useState<boolean>(false); // Loading state
+
+  const locationData: LocationData = USLocations as LocationData;
 
   const handleStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedState(event.target.value);
@@ -64,36 +64,49 @@ function App() {
   };
 
   const handleHouseClick = (house: House) => {
-    alert(`House clicked: ${house.address}`);
+    alert(`House clicked: ${house.streetAddress}`);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedState && selectedCounty && selectedCity) {
-      // Make an API call to Flask with state, county, city
-      axios
-        .post(`http://localhost:8080/api/data`, null, {
-          params: {
-            state: selectedState,
-            county: selectedCounty,
-            city: selectedCity,
-          },
-        })
-        .then((response) => {
-          console.log("Response data:", response.data);//gets the information for the API Call
-          console.log("Response data:", response.data.results[0]);//gets the information for the first house
-          console.log("Response data:", response.data.results[0].price);//gets the information for the first house's price
-          console.log("Response data:", response.data.results[0].latitude);//gets the information for the first house's latitude
-          console.log("Response data:", response.data.results[0].longitude);
-          console.log("Response data:", response.data.results[0].imgSrc);
-          console.log("Response data:", response.data.results[0].address);
-          console.log("Response data:", response.data.results[0].state);
-          console.log("Response data:", response.data.results[0].zip);
-          
-          
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/api/data`,
+          null,
+          {
+            params: {
+              state: selectedState,
+              county: selectedCounty,
+              city: selectedCity,
+            },
+          }
+        );
+        const tempHouses: House[] = [];
+        for (let i = 0; i < response.data.results.length; i++) {
+          const cHouse: House = {
+            streetAddress: response.data.results[i].streetAddress,
+            price: response.data.results[i].price,
+            bedrooms: response.data.results[i].bedrooms,
+            bathrooms: response.data.results[i].bathrooms,
+            lotAreaValue: response.data.results[i].lotAreaValue,
+            longitude: response.data.results[i].longitude,
+            latitude: response.data.results[i].latitude,
+            imgSrc: response.data.results[i].imgSrc,
+          };
+          // console.log("House:", cHouse);
+          tempHouses.push(cHouse);
+        }
+        // console.log("Temp Houses:", tempHouses);
+        setHouses(tempHouses);
+        // console.log("Houses:", houses);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Failed to fetch houses. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     } else {
       alert("Please select state, county, and city.");
     }
@@ -103,12 +116,12 @@ function App() {
     setIsInfoVisible((prev) => !prev);
   };
 
-  // Cast tempHouses to HousesData type
-  const housesData: HousesData = tempHouses as HousesData;
+  // useEffect(() => {
+  //   console.log("Houses state:", houses);
+  // }, [houses]);
 
   return (
     <>
-      {/* Add your input elements and other components here */}
       <button onClick={handleSubmit}>Search</button>
       <div className="app-container">
         <div className="header-1">
@@ -144,7 +157,7 @@ function App() {
               </select>
             </div>
 
-            {/* County Dropdown (Full List) */}
+            {/* County Dropdown */}
             <div className="select-container">
               <label htmlFor="counties">County:</label>
               <select
@@ -190,27 +203,32 @@ function App() {
         <div className="container-main">
           <div className="container-home">
             <div className="houses-list">
-              {housesData.houses.map((house, index) => (
+              {loading && <p>Loading...</p>}
+              {error && <p className="error-message">{error}</p>}
+              {houses.length === 0 && !loading && !error && (
+                <p>No houses available for the selected criteria.</p>
+              )}
+              {houses.map((house, index) => (
                 <div
                   key={index}
                   className="house-card"
                   onClick={() => handleHouseClick(house)}
                 >
                   <p className="homeText">
-                    <strong>Address:</strong> {house.address}
+                    <strong>Address:</strong> {house.streetAddress || "N/A"}
                   </p>
                   <p className="homeText">
-                    <strong>Price:</strong> ${house.price.toLocaleString()}
+                    <strong>Price:</strong> ${house.price.toLocaleString() || "N/A"}
                   </p>
                   <p className="homeText">
-                    <strong>Bedrooms:</strong> {house.bedrooms}
+                    <strong>Bedrooms:</strong> {house.bedrooms || "N/A"}
                   </p>
                   <p className="homeText">
-                    <strong>Bathrooms:</strong> {house.bathrooms}
+                    <strong>Bathrooms:</strong> {house.bathrooms || "N/A"}
                   </p>
                   <p className="homeText">
-                    <strong>Square Feet:</strong>{" "}
-                    {house.square_feet.toLocaleString()}
+                    <strong>Lot Area:</strong>
+                    {house.lotAreaValue.toLocaleString() || "N/A"}
                   </p>
                 </div>
               ))}

@@ -24,7 +24,6 @@ body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden; /* Prevent scrolling on the body */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
@@ -199,6 +198,10 @@ h1, h2 {
   .house-card {
     padding: 10px;
     margin-bottom: 8px;
+  }
+
+  error-message {
+    color: red;
   }
 }
 
