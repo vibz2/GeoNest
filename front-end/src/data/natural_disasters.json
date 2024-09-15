@@ -1,0 +1,84 @@
+{
+  "disasters": [
+    {
+      "name": "Earthquake",
+      "preventive_measures": [
+        "Secure heavy furniture to walls",
+        "Create an emergency plan",
+        "Practice drop, cover, and hold on drills"
+      ]
+    },
+    {
+      "name": "Flood",
+      "preventive_measures": [
+        "Install sump pumps",
+        "Elevate electrical appliances",
+        "Keep important documents in a waterproof container"
+      ]
+    },
+    {
+      "name": "Hurricane",
+      "preventive_measures": [
+        "Install storm shutters",
+        "Create a disaster supply kit",
+        "Plan evacuation routes"
+      ]
+    },
+    {
+      "name": "Tornado",
+      "preventive_measures": [
+        "Install a storm shelter",
+        "Create a family communication plan",
+        "Practice tornado drills"
+      ]
+    },
+    {
+      "name": "Wildfire",
+      "preventive_measures": [
+        "Clear debris from around your home",
+        "Create a defensible space",
+        "Keep a fire extinguisher on hand"
+      ]
+    },
+    {
+      "name": "Blizzard",
+      "preventive_measures": [
+        "Stock up on food and water",
+        "Keep extra blankets and warm clothing on hand",
+        "Create an emergency plan"
+      ]
+    },
+    {
+      "name": "Drought",
+      "preventive_measures": [
+        "Conserve water",
+        "Plant drought-resistant plants",
+        "Create a water budget"
+      ]
+    },
+    {
+      "name": "Heatwave",
+      "preventive_measures": [
+        "Stay hydrated",
+        "Stay indoors during the hottest part of the day",
+        "Check on vulnerable neighbors"
+      ]
+    },
+    {
+      "name": "Tsunami",
+      "preventive_measures": [
+        "Know the signs of a tsunami",
+        "Create an evacuation plan",
+        "Practice evacuation drills"
+      ]
+    },
+    {
+      "name": "Volcano",
+      "preventive_measures": [
+        "Know the signs of an impending eruption",
+        "Create an evacuation plan",
+        "Stay informed"
+      ]
+    }
+  ]
+}
