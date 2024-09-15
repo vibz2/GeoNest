@@ -1,12 +1,18 @@
-import { useState, ChangeEvent } from "react"; //UseEffect
+import React, { useState, ChangeEvent } from "react";
 import "../App.css";
-import { Wrapper } from "@googlemaps/react-wrapper";
-import MapComponent from "../MapsPage";
 import { FaExclamationCircle } from "react-icons/fa";
 import USLocations from "../data/USLocationsUser.json";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
-// Define the type for house data
+// Define the type for location data
+interface LocationData {
+  city: string[];
+  state: string[];
+  county: string[];
+}
+
+// Define the type for the house data returned from the API
 interface House {
   streetAddress: string;
   price: number;
@@ -15,14 +21,12 @@ interface House {
   lotAreaValue: number;
   longitude: number;
   latitude: number;
-  imgSrc: string; // Assuming imgSrc comes from the API
+  imgSrc: string;
 }
 
-// Define the type for location data
-interface LocationData {
-  city: string[];
-  state: string[];
-  county: string[];
+// Define the type for the API response
+interface ApiResponse {
+  results: House[];
 }
 
 interface ExclamationProps {
@@ -37,14 +41,15 @@ function Exclamation({ onClick }: ExclamationProps) {
   );
 }
 
-function App() {
+function LandingPage() {
+  const navigate = useNavigate();
+
   const [isInfoVisible, setIsInfoVisible] = useState<boolean>(false);
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedCounty, setSelectedCounty] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [houses, setHouses] = useState<House[]>([]);
-  const [error, setError] = useState<string | null>(null); // Error state
-  const [loading, setLoading] = useState<boolean>(false); // Loading state
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const locationData: LocationData = USLocations as LocationData;
 
@@ -63,17 +68,13 @@ function App() {
     setSelectedCity(event.target.value);
   };
 
-  const handleHouseClick = (house: House) => {
-    alert(`House clicked: ${house.streetAddress}`);
-  };
-
   const handleSubmit = async () => {
     if (selectedState && selectedCounty && selectedCity) {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.post(
-          `http://localhost:8080/api/data`,
+        const response = await axios.post<ApiResponse>(
+          "http://localhost:8080/api/data",
           null,
           {
             params: {
@@ -83,24 +84,17 @@ function App() {
             },
           }
         );
-        const tempHouses: House[] = [];
-        for (let i = 0; i < response.data.results.length; i++) {
-          const cHouse: House = {
-            streetAddress: response.data.results[i].streetAddress,
-            price: response.data.results[i].price,
-            bedrooms: response.data.results[i].bedrooms,
-            bathrooms: response.data.results[i].bathrooms,
-            lotAreaValue: response.data.results[i].lotAreaValue,
-            longitude: response.data.results[i].longitude,
-            latitude: response.data.results[i].latitude,
-            imgSrc: response.data.results[i].imgSrc,
-          };
-          // console.log("House:", cHouse);
-          tempHouses.push(cHouse);
-        }
-        // console.log("Temp Houses:", tempHouses);
-        setHouses(tempHouses);
-        // console.log("Houses:", houses);
+
+        const houses = response.data.results; // Now correctly typed as House[]
+
+        navigate('/results', { 
+          state: { 
+            houses, 
+            state: selectedState, 
+            county: selectedCounty, 
+            city: selectedCity 
+          } 
+        });
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Failed to fetch houses. Please try again.");
@@ -116,135 +110,91 @@ function App() {
     setIsInfoVisible((prev) => !prev);
   };
 
-  // useEffect(() => {
-  //   console.log("Houses state:", houses);
-  // }, [houses]);
-
   return (
-    <>
-      <button onClick={handleSubmit}>Search</button>
-      <div className="app-container">
-        <div className="header-1">
-          <h1>GeoNest</h1>
+    <div className="app-container">
+      <div className="header-1">
+        <h1>GeoNest</h1>
+      </div>
+      <div className="header-2">
+        <div className="exclamation">
+          <Exclamation onClick={toggleInfoBox} />
+          {isInfoVisible && (
+            <div className="info-box">
+              <p>This is info box text.</p>
+            </div>
+          )}
         </div>
-        <div className="header-2">
-          <div className="exclamation">
-            <Exclamation onClick={toggleInfoBox} />
-            {isInfoVisible && (
-              <div className="info-box">
-                <p>This is info box text.</p>
-              </div>
-            )}
-          </div>
-          <div className="select-wrapper">
-            {/* State Dropdown */}
-            <div className="select-container">
-              <label htmlFor="states">State:</label>
-              <select
-                name="states"
-                id="states"
-                onChange={handleStateChange}
-                value={selectedState}
-              >
-                <option value="" disabled hidden>
-                  Choose a state
+        <div className="select-wrapper">
+          {/* State Dropdown */}
+          <div className="select-container">
+            <label htmlFor="states">State:</label>
+            <select
+              name="states"
+              id="states"
+              onChange={handleStateChange}
+              value={selectedState}
+            >
+              <option value="" disabled hidden>
+                Choose a state
+              </option>
+              {locationData.state.map((state, index) => (
+                <option key={index} value={state}>
+                  {state}
                 </option>
-                {locationData.state.map((state, index) => (
-                  <option key={index} value={state}>
-                    {state}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* County Dropdown */}
-            <div className="select-container">
-              <label htmlFor="counties">County:</label>
-              <select
-                name="counties"
-                id="counties"
-                onChange={handleCountyChange}
-                value={selectedCounty}
-              >
-                <option value="" disabled hidden>
-                  Choose a county
-                </option>
-                {locationData.county.map((county, index) => (
-                  <option key={index} value={county}>
-                    {county}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* City Dropdown */}
-            <div className="select-container">
-              <label htmlFor="cities">City:</label>
-              <select
-                name="cities"
-                id="cities"
-                onChange={handleCityChange}
-                value={selectedCity}
-                disabled={!selectedCounty}
-              >
-                <option value="" disabled hidden>
-                  Choose a city
-                </option>
-                {locationData.city.map((city, index) => (
-                  <option key={index} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="container-main">
-          <div className="container-home">
-            <div className="houses-list">
-              {loading && <p>Loading...</p>}
-              {error && <p className="error-message">{error}</p>}
-              {houses.length === 0 && !loading && !error && (
-                <p>No houses available for the selected criteria.</p>
-              )}
-              {houses.map((house, index) => (
-                <div
-                  key={index}
-                  className="house-card"
-                  onClick={() => handleHouseClick(house)}
-                >
-                  <p className="homeText">
-                    <strong>Address:</strong> {house.streetAddress || "N/A"}
-                  </p>
-                  <p className="homeText">
-                    <strong>Price:</strong> ${house.price.toLocaleString() || "N/A"}
-                  </p>
-                  <p className="homeText">
-                    <strong>Bedrooms:</strong> {house.bedrooms || "N/A"}
-                  </p>
-                  <p className="homeText">
-                    <strong>Bathrooms:</strong> {house.bathrooms || "N/A"}
-                  </p>
-                  <p className="homeText">
-                    <strong>Lot Area:</strong>
-                    {house.lotAreaValue.toLocaleString() || "N/A"}
-                  </p>
-                </div>
               ))}
-            </div>
+            </select>
           </div>
-          <div className="container-map">
-            <div className="App">
-              <Wrapper apiKey={"AIzaSyBmhp7l4zjV_ILnIoZPEUcXFlGkBycSo2Y"}>
-                <MapComponent />
-              </Wrapper>
-            </div>
+
+          {/* County Dropdown */}
+          <div className="select-container">
+            <label htmlFor="counties">County:</label>
+            <select
+              name="counties"
+              id="counties"
+              onChange={handleCountyChange}
+              value={selectedCounty}
+            >
+              <option value="" disabled hidden>
+                Choose a county
+              </option>
+              {locationData.county.map((county, index) => (
+                <option key={index} value={county}>
+                  {county}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* City Dropdown */}
+          <div className="select-container">
+            <label htmlFor="cities">City:</label>
+            <select
+              name="cities"
+              id="cities"
+              onChange={handleCityChange}
+              value={selectedCity}
+              disabled={!selectedCounty}
+            >
+              <option value="" disabled hidden>
+                Choose a city
+              </option>
+              {locationData.city.map((city, index) => (
+                <option key={index} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
-    </>
+
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? "Searching..." : "Search"}
+      </button>
+      
+      {error && <p className="error-message">{error}</p>}
+    </div>
   );
 }
 
-export default App;
+export default LandingPage;
