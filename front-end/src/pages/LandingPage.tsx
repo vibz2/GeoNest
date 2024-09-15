@@ -2,7 +2,7 @@ import { useState, ChangeEvent } from "react";
 import "../App.css";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import MapComponent from "../MapsPage";
-import { FaExclamationCircle } from 'react-icons/fa';
+import { FaExclamationCircle, FaTimes } from 'react-icons/fa'; // Import FaTimes for "X" icon
 import USLocations from "../data/USLocationsUser.json";
 import tempHouses from "../data/tempHouses.json";
 
@@ -27,14 +27,20 @@ interface LocationData {
 }
 
 interface ExclamationProps {
-  onClick: () => void;
+  onClick?: () => void; // Make onClick optional
   color: string;
+  isInfoVisible: boolean; // Add isInfoVisible to props
 }
 
-function Exclamation({ onClick, color }: ExclamationProps) {
+function Exclamation({ onClick, color, isInfoVisible }: ExclamationProps) {
+  // Check if color is gray to conditionally disable onClick
+  const Icon = isInfoVisible ? FaTimes : FaExclamationCircle; // Conditionally set icon
   return (
-    <div onClick={onClick} style={{ cursor: 'pointer' }}>
-      <FaExclamationCircle size={24} color={color} />
+    <div
+      onClick={color !== "gray" ? onClick : undefined} // Disable onClick if color is gray
+      style={{ cursor: color !== "gray" ? 'pointer' : 'default' }}
+    >
+      <Icon size={24} color={color} />
     </div>
   );
 }
@@ -72,8 +78,7 @@ function App() {
 
   const toggleInfoBox = (): void => {
     setIsInfoVisible(prev => !prev);
-    // Toggle color between gray and red
-
+    // No need to toggle color here
   };
 
   // Cast tempHouses to HousesData type
@@ -87,7 +92,7 @@ function App() {
         </div>
         <div className="header-2">
           <div className="exclamation">
-            <Exclamation onClick={toggleInfoBox} color={exclamationColor} />
+            <Exclamation onClick={toggleInfoBox} color={exclamationColor} isInfoVisible={isInfoVisible} />
             {isInfoVisible && (
               <div className="info-box">
                 <p>This is info box text.</p>
