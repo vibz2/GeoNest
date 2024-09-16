@@ -249,7 +249,7 @@ function App() {
           </div>
           <div className="container-map">
             <div className="App">
-              <Wrapper apiKey={"AIzaSyBmhp7l4zjV_ILnIoZPEUcXFlGkBycSo2Y"}>
+              <Wrapper apiKey={""}>
                 <MapComponent />
               </Wrapper>
             </div>
