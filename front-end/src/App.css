@@ -1,8 +1,29 @@
+
+:root {
+  --background-gray: #fbfaf5;
+  --primary-white: #ffffff;
+  --off-white: #FDFDFB;
+  --gray-stroke: #919191;
+  --orange-highlight: #e36609;
+
+  --header-bg: var(--primary-white);
+  --header-border: var(--orange-highlight);
+  --container-home-bg: #e36609;
+  --container-map-bg: #728d71;
+  --house-card-bg: var(--primary-white);
+  --house-card-border: #ddd;
+  --info-box-bg: #ea1010;
+  --info-box-border: #e02525;
+  --select-bg: var(--primary-white);
+  --select-border: #ccc;
+  --select-hover-border: #888;
+  --home-text-color: #000;
+}
+
 body, html {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden; /* Prevent scrolling on the body */
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
@@ -10,31 +31,39 @@ body, html {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  
-}
-
-.header-1, .header-2 {
-  padding: 10px;
-  color: rgb(189, 70, 70);
 }
 
 .header-1 {
-  background-color: rgb(255, 255, 255);
-  border-bottom: 2px solid orange; /* Add thin orange line */
+  display: flex;
+  justify-content: center;
+  background-color: var(--header-bg);
+  border-bottom: 2px solid var(--header-border);
+  padding: 10px;
+  color: var(--header-border);
 }
 
 .header-2 {
-  background-color: rgb(255, 255, 255);
+  background-color: var(--header-bg);
   display: flex;
   flex: 0;
   align-content: center;
+  padding: 10px;
+  color: var(--header-border);
+}
+
+.select-container {
+  width: 4000px;
 }
 
 /* Add styles for the select-wrapper and select element */
 .select-wrapper {
-  width: 500px;
+  right: 74vh;
+  width: 80%; /* Changed from 500px to 80% for responsiveness */
+  max-width: 500px; /* Optionally set a max-width */
   padding: 10px;
+  margin: 0 auto; /* Center the select-wrapper */
   position: relative;
+  
  
   border-radius: 25px; /* Make the wrapper round */
   display: flex;
@@ -45,9 +74,9 @@ body, html {
 .select-wrapper select {
   width: 100%; /* Make the select take up the full width of the wrapper */
   padding: 10px; /* Add some padding for comfort */
-  background-color: white; /* Background color for the select box */
+  background-color: var(--select-bg);
   color: black; /* Text color to ensure it's visible */
-  border: 2px solid #ccc; /* Light border */
+  border: 2px solid var(--select-border);
   border-radius: 25px; /* Make the select box itself round */
   outline: none; /* Remove the default outline */
   -webkit-appearance: none; /* Remove the default dropdown arrow in webkit browsers */
@@ -58,30 +87,33 @@ body, html {
 
 /* Optional: Add some hover/focus effects */
 select:hover, select:focus {
-  border-color: #888; /* Change the border color on hover/focus */
+  border-color: var(--select-hover-border); /* Change the border color on hover/focus */
 }
 
 
 
 .container-main {
   display: flex;
+  flex-wrap: wrap; /* Allow wrapping of flex items */
   flex: 1;
 }
 
 .container-home {
-  background-color: rgb(148, 184, 216);
-  width: 30%;
+  background-color: var(--container-home-bg);
+  flex: 1; /* Allow containers to grow/shrink */
+  min-width: 300px; /* Set a minimum width to prevent too narrow containers */
   padding: 20px;
 }
 
 .container-map {
-  background-color: rgb(144, 166, 18);
-  width: 70%;
+  background-color: var(--container-map-bg);
+  flex: 2; /* Allow containers to grow/shrink */
+  min-width: 300px; /* Set a minimum width to prevent too narrow containers */
   padding: 20px;
 }
 
 .homeText{
-  color: rgb(0, 0, 0);
+  color: var(--home-text-color);
 }
 
 .api-response, .read-the-docs {
@@ -95,8 +127,8 @@ select:hover, select:focus {
 }
 
 .house-card {
-  background-color: rgb(255, 255, 255);
-  border: 1px solid #ddd;
+  background-color: var(--house-card-bg);
+  border: 1px solid var(--house-card-border);
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 10px;
@@ -120,18 +152,74 @@ h1, h2 {
   position: absolute;
   float: right;
   padding-top: 10px;
-  padding-left: 1350px;
+  padding-left: 90vw; /* Use vw for positioning */
 }
 
 .info-box {
   position: absolute;
-  top: 30px; /* Adjust as needed to place the box */
-  right: 10px;
-  background-color: #ea1010;
+  top: 5vh; /* Use viewport units for relative positioning */
+  right: 1vw; /* Use viewport units */
+  background-color: var(--info-box-bg);
   color: white; /* Ensure the text is visible */
-  border: 1px solid #e02525;
+  border: 1px solid var(--info-box-border);
   padding: 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000; /* Ensure it appears above other content */
   margin-top: 10px; /* Space between exclamation and info box */
 }
+
+/* Media Queries */
+/* Adjust layout for smaller screens */
+@media (max-width: 1024px) {
+  .container-main {
+    flex-direction: column;
+  }
+
+  .container-home, .container-map {
+    width: 100%;
+  }
+
+  .exclamation {
+    padding-left: 80vw; /* Adjust as needed */
+  }
+}
+
+/* Further adjustments for very small screens like tablets and mobiles */
+@media (max-width: 768px) {
+  .select-wrapper {
+    width: 90%;
+  }
+
+  h1, h2 {
+    font-size: 1.5em; /* Scale down heading sizes */
+  }
+
+  .house-card {
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+
+  error-message {
+    color: red;
+  }
+}
+
+.search {
+  padding-top: 19px;
+  margin-left: 10px;
+}
+
+.button {
+  border-radius: 30%;
+  padding: 5px;
+  cursor: pointer;
+  background-color: var(--orange-highlight);
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #d95404; /* Darken the background color on hover */
+}
+
+

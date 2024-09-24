@@ -48,7 +48,7 @@ interface MapComponentProps {
       <div 
         ref={ref} 
         style={{
-          height: "400px",
+          height: "700px",
           width: "100%",
         }}
       />
